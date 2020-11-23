@@ -95,6 +95,6 @@ shop_map = ShopMap(rows=2,
                    shelf_length=10,
                    space_between_rows=3,
                    space_between_shelves=2)
-
-shop_map.plot()
-shop_map.save("map.txt")
+#
+# shop_map.plot()
+# shop_map.save("map.txt")
