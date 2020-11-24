@@ -1,3 +1,5 @@
+import random
+
 from mesa import Agent
 
 
@@ -27,14 +29,17 @@ class CustomerAgent(Agent):
 
     # TODO uzupenic tworzenie listy zakupow
     def get_shopping_list(self):
-        # return [self.model.shelfs[random.randint(0, len(self.model.shelfs)-1)], (0, 20)]
-        return self.model.grid.find_empty()
+        return [self.model.shelfs[random.randint(0, len(self.model.shelfs)-1)], (0, 20)]
+        # return self.model.grid.find_empty()
 
     def move(self):
-        a = self.find_path(self.shopping_list)
+        a = self.find_path(self.shopping_list[0])
         if len(a)>1:
             if self.model.grid.is_cell_empty(a[-2]):
                 self.model.grid.move_agent(self, a[-2])
+        else:
+            if self.model.grid.is_cell_empty(a[0]):
+                self.model.grid.move_agent(self, a[0])
 
     def go_to_out(self):
         pass
