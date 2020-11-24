@@ -1,14 +1,6 @@
 from mesa import Agent
 
 
-class ShelfAgent(Agent):
-    def __init__(self, unique_id, model, pos, sick):
-        super().__init__(unique_id, model)
-        self.pos = pos
-        self.sick = sick
-        self.type = 11
-
-
 class CustomerAgent(Agent):
     # TODO uzupenic braukjące parametry
     def __init__(self, unique_id, model, pos, sick, risk_group):
@@ -33,7 +25,7 @@ class CustomerAgent(Agent):
         else:
             self.go_to_out()
 
-# TODO uzupenic tworzenie listy zakupow
+    # TODO uzupenic tworzenie listy zakupow
     def get_shopping_list(self):
         # return [self.model.shelfs[random.randint(0, len(self.model.shelfs)-1)], (0, 20)]
         return self.model.grid.find_empty()
@@ -49,7 +41,7 @@ class CustomerAgent(Agent):
 
     def get_grid(self):
         grid =[]
-        for i in self.model.grid.grid:
+        for i in self.model.grid .grid:
             a=[]
             for j in i:
                 if j is None:
@@ -112,8 +104,23 @@ class CustomerAgent(Agent):
                         m[i][j + 1] = k + 1
 
 
-class BackgroundAgent(Agent):
-    def __init__(self, unique_id, model, pos, type):
+# TODO
+class CashierAgent(Agent):
+    def __init__(self, unique_id, model, pos):
         super().__init__(unique_id, model)
         self.pos = pos
-        self.type = type
+
+
+# TODO
+class ShelfAgent(Agent):
+    def __init__(self, unique_id, model, pos, sick):
+        super().__init__(unique_id, model)
+        self.pos = pos
+        self.sick = sick
+
+
+class BackgroundAgent(Agent):
+    def __init__(self, unique_id, model, pos, type_):
+        super().__init__(unique_id, model)
+        self.pos = pos
+        self.type = type_

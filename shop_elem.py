@@ -3,9 +3,10 @@ from enum import Enum
 
 class ShopElem(Enum):
     EMPTY = 0
-    SHELF = 1
-    WALL = 2
-    CASHIER = 3
-    ENTRY = 4
-    EXIT = 5
+    SHOPPING_AREA = 1
+    SHELF = 2
+    WALL = 3
+    CASHIER = 4
+    ENTRY = 5
+    EXIT = 6
 

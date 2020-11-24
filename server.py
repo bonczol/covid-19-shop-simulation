@@ -1,6 +1,8 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule, TextElement
 from mesa.visualization.UserParam import UserSettableParameter
+from agents import CustomerAgent, ShelfAgent, BackgroundAgent, CashierAgent
+from shop_elem import ShopElem
 
 from model import CovidModel
 
@@ -14,29 +16,23 @@ class SickElement(TextElement):
 
 
 def schelling_draw(agent):
-    """
-    Portrayal Method for canvas
-    """
     if agent is None:
         return
     portrayal = {"Shape": "rect", "w": 1, "h": 1, "Filled": "true", "Layer": 0}
 
-    if agent.type == 1:
-        portrayal["Color"] = ["Grey"]
-    elif agent.type == 2:
-        portrayal["Color"] = ["Black"]
-    elif agent.type == 3:
+    if type(agent) is CustomerAgent:
+        portrayal = {"Shape": "circle", "r": 1, "Filled": "true", "Layer": 0, "Color": "Blue"}
+    elif type(agent) is CashierAgent:
         portrayal["Color"] = ["Yellow"]
-    elif agent.type == 4:
-        portrayal["Color"] = ["Green"]
-    elif agent.type == 5:
-        portrayal["Color"] = ["Red"]
-    elif agent.type == 6:
-        portrayal["Color"] = ["Purple"]
-    elif agent.type == 7:
-        portrayal["Color"] = ["Purple"]
-    else:
-        portrayal = {"Shape": "circle", "r": 1, "Filled": "true", "Layer": 0, "Color" : "Blue"}
+    elif type(agent) is ShelfAgent:
+        portrayal["Color"] = ["Grey"]
+    elif type(agent) is BackgroundAgent:
+        if agent.type == ShopElem.WALL:
+            portrayal["Color"] = ["Black"]
+        elif agent.type == ShopElem.ENTRY:
+            portrayal["Color"] = ["Green"]
+        elif agent.type == ShopElem.EXIT:
+            portrayal["Color"] = ["Red"]
 
     return portrayal
 
