@@ -18,4 +18,19 @@ class ShopParser:
             elem = self.map[coord]
             self.elements[elem].append(coord)
 
+        self.elements[ShopElem.SHELF] = [(s, self.get_access_place(s)) for s in self.elements[ShopElem.SHELF]]
+
+    def get_access_place(self, shelf):
+        x, y = shelf
+
+        # Right
+        if x > 0 and self.map[x - 1, y] == ShopElem.SHOPPING_AREA:
+            return x - 1, y
+        # Left
+        elif x < self.map.shape[0] - 1 and self.map[x + 1, y] == ShopElem.SHOPPING_AREA:
+            return x + 1, y
+        # Top
+        elif self.map[x, y + 1] == ShopElem.SHOPPING_AREA:
+            return x, y + 1
+
 

@@ -1,7 +1,7 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule, TextElement
 from mesa.visualization.UserParam import UserSettableParameter
-from agents import CustomerAgent, ShelfAgent, BackgroundAgent, CashierAgent
+from agents import CustomerAgent, ShelfAgent, BackgroundAgent, CashierAgent, TestAgent
 from shop_elem import ShopElem
 
 from model import CovidModel
@@ -22,6 +22,8 @@ def schelling_draw(agent):
 
     if type(agent) is CustomerAgent:
         portrayal = {"Shape": "circle", "r": 1, "Filled": "true", "Layer": 0, "Color": "Blue"}
+    elif type(agent) is TestAgent:
+        portrayal["Color"] = ["Pink"]
     elif type(agent) is CashierAgent:
         portrayal["Color"] = ["Yellow"]
     elif type(agent) is ShelfAgent:

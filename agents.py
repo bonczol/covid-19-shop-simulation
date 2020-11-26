@@ -1,6 +1,7 @@
 import random
 
 from mesa import Agent
+from shop_elem import ShopElem
 
 
 class CustomerAgent(Agent):
@@ -10,9 +11,12 @@ class CustomerAgent(Agent):
         self.pos = pos
         self.sick = False
         self.risk_group = risk_group
-        self.shopping_list = self.get_shopping_list()
         self.type = 10
         self.last = "up"
+
+        self.min_list_len = 1
+        self.max_list_len = 12
+        self.shopping_list = self.get_shopping_list()
 
     # TODO uzupenic zachowania agenta
     def step(self):
@@ -29,11 +33,13 @@ class CustomerAgent(Agent):
 
     # TODO uzupenic tworzenie listy zakupow
     def get_shopping_list(self):
-        return [self.model.shelfs[random.randint(0, len(self.model.shelfs)-1)], (0, 20)]
-        # return self.model.grid.find_empty()
+        list_len = random.randint(self.min_list_len, self.max_list_len)
+        shopping_list = random.choices(self.model.shop.elements[ShopElem.SHELF], k=list_len)
+        return shopping_list
 
     def move(self):
-        a = self.find_path(self.shopping_list[0])
+        a = self.find_path(self.shopping_list[0][1])
+        print(a)
         if len(a)>1:
             if self.model.grid.is_cell_empty(a[-2]):
                 self.model.grid.move_agent(self, a[-2])
@@ -46,7 +52,7 @@ class CustomerAgent(Agent):
 
     def get_grid(self):
         grid =[]
-        for i in self.model.grid .grid:
+        for i in self.model.grid.grid:
             a=[]
             for j in i:
                 if j is None:
@@ -55,7 +61,6 @@ class CustomerAgent(Agent):
                     a.append(1)
             grid.append(a)
         return grid
-
 
     def find_path(self, end):
         m = []
@@ -129,3 +134,8 @@ class BackgroundAgent(Agent):
         super().__init__(unique_id, model)
         self.pos = pos
         self.type = type_
+
+
+class TestAgent(Agent):
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)

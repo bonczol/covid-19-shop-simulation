@@ -4,7 +4,7 @@ from mesa import Model
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
 
-from agents import CustomerAgent, CashierAgent, ShelfAgent, BackgroundAgent
+from agents import CustomerAgent, CashierAgent, ShelfAgent, BackgroundAgent, TestAgent
 from shop_generator import ShopGenerator
 from shop_elem import ShopElem
 from shop_parser import ShopParser
@@ -22,7 +22,6 @@ class CovidModel(Model):
         self.shop = ShopParser()
         self.shop.parse(shop_map)
 
-        print(self.shop.map.shape)
         self.width, self.height = self.shop.map.shape
         self.grid = SingleGrid(self.width, self.height, False)
         self.schedule = RandomActivation(self)
@@ -72,10 +71,11 @@ class CovidModel(Model):
             self.schedule.add(cashier)
 
     def spawn_shelves(self):
-        for coord in self.shop.elements[ShopElem.SHELF]:
+        for coord, _ in self.shop.elements[ShopElem.SHELF]:
             shelf = ShelfAgent(self.get_id(), self, coord, sick=False)
             self.grid.place_agent(shelf, coord)
             self.schedule.add(shelf)
+
 
     def step(self):
         # TODO
