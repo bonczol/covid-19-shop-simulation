@@ -58,7 +58,7 @@ class CovidModel(Model):
             self.grid.place_agent(agent, coord)
 
     def spawn_customers(self):
-        spawn_coords = random.choices(self.shop.elements[ShopElem.SHOPPING_AREA], k=self.num_agents)
+        spawn_coords = random.sample(self.shop.elements[ShopElem.SHOPPING_AREA],self.num_agents)
         for coord in spawn_coords:
             customer = CustomerAgent(self.get_id(), self, coord, True, True)
             self.grid.place_agent(customer, coord)
