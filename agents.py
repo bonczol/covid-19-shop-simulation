@@ -169,10 +169,11 @@ class CashierAgent(Agent):
 
 
 class ShelfAgent(Agent):
-    def __init__(self, unique_id, model, pos, sick_level):
+    def __init__(self, unique_id, model, pos, sick_level, desc_counter):
         super().__init__(unique_id, model)
         self.pos = pos
         self.sick_level = sick_level
+        self.desc_counter = desc_counter
 
     def get_sick(self):
         if self.sick_level < 10:
@@ -180,6 +181,13 @@ class ShelfAgent(Agent):
 
     def get_infection_prob(self):
         return (self.sick_level / self.model.max_shelf_sick_level) * self.model.touch_face_prob
+
+    def step(self):
+        if self.sick_level > 0 and self.desc_counter > self.model.virus_duration:
+            self.sick_level -= 1
+            self.desc_counter = 0
+
+        self.desc_counter += 1
 
 
 class BackgroundAgent(Agent):
