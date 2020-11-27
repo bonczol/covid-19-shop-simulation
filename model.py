@@ -92,7 +92,7 @@ class CovidModel(Model):
             self.grid.place_agent(agent, coord)
 
     def spawn_customers(self):
-        spawn_coords = random.choices(self.shop.elements[ShopElem.SHOPPING_AREA], k=self.num_customers)
+        spawn_coords = random.sample(self.shop.elements[ShopElem.SHOPPING_AREA], self.num_customers)
         sick_arr = shuffled_bools(self.num_customers, self.sick_percent)
         mask_arr = shuffled_bools(self.num_customers, self.mask_percent)
         risk_group_arr = shuffled_bools(self.num_customers, self.risk_group_percent)
