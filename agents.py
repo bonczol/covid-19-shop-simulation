@@ -18,14 +18,12 @@ class CustomerAgent(Agent):
         self.shopping_list = self.get_shopping_list()
 
     def step(self):
-        curr_shelf = self.shopping_list[0][0]
-
         for neighbor in self.model.grid.neighbor_iter(self.pos):
             # Infect another customer
             if self.sick and type(neighbor) == CustomerAgent and not neighbor.sick:
                 if random_bool(self.get_infection_prob(neighbor)):
                     neighbor.get_sick()
-            elif neighbor.pos == curr_shelf and type(neighbor) == ShelfAgent:
+            elif self.shopping_list and neighbor.pos == self.shopping_list[0] and type(neighbor) == ShelfAgent:
                 # Infect shelf
                 if self.sick:
                     if random_bool(self.model.infect_shelf_prob):
@@ -37,7 +35,7 @@ class CustomerAgent(Agent):
 
         if self.shopping_list:
             self.move()
-            if self.pos == self.shopping_list[0][1]:
+            if self.pos == self.shopping_list[0]:
                 self.shopping_list.pop(0)
         else:
             self.go_to_out()
@@ -50,12 +48,11 @@ class CustomerAgent(Agent):
     def get_shopping_list(self):
         list_len = randint_normal(1, self.model.max_shopping_list, self.model.mean_shopping_list,
                                   self.model.std_dev_shopping_list)
-        shopping_list = random.choices(self.model.shop.elements[ShopElem.SHELF], k=list_len)
-        return shopping_list
+        shopping_list = random.sample(self.model.shop.elements[ShopElem.SHELF], list_len)
+        return [shelf_access for _, shelf_access in shopping_list]
 
     def move(self):
-        a = self.find_path(self.shopping_list[0][1])
-        print(a)
+        a = self.find_path(self.shopping_list[0])
         if len(a) > 1:
             next_pos = a[-2]
         else:
@@ -82,7 +79,7 @@ class CustomerAgent(Agent):
         else:
             next_pos = (pos[0], 27)
             if self.model.grid.is_cell_empty(next_pos):
-                self.shopping_list.append((next_pos,next_pos))
+                self.shopping_list.append(next_pos)
 
     def get_grid(self):
         grid = []
