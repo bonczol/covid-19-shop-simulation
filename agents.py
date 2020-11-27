@@ -62,22 +62,22 @@ class CustomerAgent(Agent):
             self.model.grid.move_agent(self, next_pos)
 
     def go_to_out(self):
-        pos = self.pos
-        if pos[1] == 34:
-            if self.model.grid.is_cell_empty((pos[0] - 1, pos[1])):
-                self.model.grid.move_agent(self, (pos[0] - 1, pos[1]))
-        elif pos[1] == 33:
-            if self.model.grid.is_cell_empty((pos[0], pos[1] + 1)):
-                self.model.grid.move_agent(self, (pos[0], pos[1] + 1))
+        pos=self.pos
+        if pos[1]==35:
+            if self.model.grid.is_cell_empty((pos[0]-1, pos[1])):
+                self.model.grid.move_agent(self, (pos[0]-1, pos[1]))
+        elif pos[1]==34:
+            if self.model.grid.is_cell_empty((pos[0], pos[1]+1)):
+                self.model.grid.move_agent(self, (pos[0], pos[1]+1))
             elif self.model.grid.is_cell_empty((pos[0] + 1, pos[1])):
                 self.model.grid.move_agent(self, (pos[0] + 1, pos[1]))
-        elif pos[1] > 26:
-            if self.model.grid.is_cell_empty((pos[0], pos[1] + 1)):
-                self.model.grid.move_agent(self, (pos[0], pos[1] + 1))
-            elif self.model.grid.is_cell_empty((pos[0] + 1, pos[1])):
-                self.model.grid.move_agent(self, (pos[0] + 1, pos[1]))
+        elif pos[1]>27:
+            if self.model.grid.is_cell_empty((pos[0], pos[1]+1)):
+                self.model.grid.move_agent(self, (pos[0], pos[1]+1))
+            elif self.model.grid.is_cell_empty((pos[0]+1, pos[1])):
+                self.model.grid.move_agent(self, (pos[0]+1, pos[1]))
         else:
-            next_pos = (pos[0], 27)
+            next_pos = (pos[0], 28)
             if self.model.grid.is_cell_empty(next_pos):
                 self.shopping_list.append(next_pos)
 
@@ -131,6 +131,7 @@ class CustomerAgent(Agent):
                 k -= 1
         return the_path
 
+
     def make_step(self, m, a, k):
         for i in range(len(m)):
             for j in range(len(m[i])):
@@ -169,10 +170,11 @@ class CashierAgent(Agent):
 
 
 class ShelfAgent(Agent):
-    def __init__(self, unique_id, model, pos, sick_level):
+    def __init__(self, unique_id, model, pos, sick_level, desc_counter):
         super().__init__(unique_id, model)
         self.pos = pos
         self.sick_level = sick_level
+        self.desc_counter = desc_counter
 
     def get_sick(self):
         if self.sick_level < 10:
@@ -180,6 +182,13 @@ class ShelfAgent(Agent):
 
     def get_infection_prob(self):
         return (self.sick_level / self.model.max_shelf_sick_level) * self.model.touch_face_prob
+
+    def step(self):
+        if self.sick_level > 0 and self.desc_counter > self.model.virus_duration:
+            self.sick_level -= 1
+            self.desc_counter = 0
+
+        self.desc_counter += 1
 
 
 class BackgroundAgent(Agent):

@@ -15,11 +15,12 @@ class CovidModel(Model):
     def __init__(self,
                  width,
                  height,
-                 sick_percent=0.5,
+                 sick_percent=0.1,
                  mask_percent=0.5,
                  risk_group_percent=0.5,
-                 sick_shelf_percent=0.1,
+                 sick_shelf_percent=0,
                  death_ratio=0.3,
+                 virus_duration=20,
                  num_customers=20):
 
         self.num_customers = num_customers
@@ -28,6 +29,7 @@ class CovidModel(Model):
         self.sick_percent = sick_percent
         self.sick_shelf_percent = sick_shelf_percent
         self.death_ratio = death_ratio
+        self.virus_duration = virus_duration
         self.c =0
 
         # Infection params - by cough
@@ -89,6 +91,7 @@ class CovidModel(Model):
 
     def spawn_background(self, type_):
         for coord in self.shop.elements[type_]:
+            print(coord)
             agent = BackgroundAgent(self.get_id(), self, coord, type_=type_)
             self.grid.place_agent(agent, coord)
 
@@ -110,11 +113,14 @@ class CovidModel(Model):
             self.schedule.add(cashier)
 
     def spawn_shelves(self):
-        sick_arr = shuffled_bools(len(self.shop.elements[ShopElem.SHELF]), self.sick_shelf_percent)
-        for shelf, sick in zip(self.shop.elements[ShopElem.SHELF], sick_arr):
+        num_shelves = len(self.shop.elements[ShopElem.SHELF])
+        sick_arr = shuffled_bools(num_shelves, self.sick_shelf_percent)
+        desc_counter_arr = random.choices(range(0, self.virus_duration), k=num_shelves)
+
+        for shelf, sick, desc_counter in zip(self.shop.elements[ShopElem.SHELF], sick_arr, desc_counter_arr):
             coord, _ = shelf
             sick_level = random.randint(1, self.max_shelf_sick_level) if sick else 0
-            shelf_agent = ShelfAgent(self.get_id(), self, coord, sick_level=sick_level)
+            shelf_agent = ShelfAgent(self.get_id(), self, coord, sick_level=sick_level, desc_counter=desc_counter)
             self.grid.place_agent(shelf_agent, coord)
             self.schedule.add(shelf_agent)
 
