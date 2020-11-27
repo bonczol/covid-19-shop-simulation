@@ -20,7 +20,7 @@ class CovidModel(Model):
                  risk_group_percent=0.5,
                  sick_shelf_percent=0.1,
                  death_ratio=0.3,
-                 num_customers=10):
+                 num_customers=20):
 
         self.num_customers = num_customers
         self.mask_percent = mask_percent
@@ -28,6 +28,7 @@ class CovidModel(Model):
         self.sick_percent = sick_percent
         self.sick_shelf_percent = sick_shelf_percent
         self.death_ratio = death_ratio
+        self.c =0
 
         # Infection params - by cough
         self.carrier_mask_neighbour_mask = 0.015
@@ -117,8 +118,30 @@ class CovidModel(Model):
             self.grid.place_agent(shelf_agent, coord)
             self.schedule.add(shelf_agent)
 
+    def add_new_customer(self):
+        x, y = self.shop.elements[ShopElem.ENTRY][0]
+        if self.grid.is_cell_empty((x, y - 1)):
+            sick = shuffled_bools(1, self.sick_percent)[0]
+            mask = shuffled_bools(1, self.mask_percent)[0]
+            risk_group = shuffled_bools(1, self.risk_group_percent)[0]
+            customer = CustomerAgent(self.get_id(), self, (x, y - 1),  sick, mask, risk_group)
+            self.grid.place_agent(customer, (x, y - 1))
+            self.schedule.add(customer)
+            return True
+        else:
+            return False
+
     def step(self):
-        # TODO
         self.schedule.step()
         # collect data
         self.datacollector.collect(self)
+
+        for neighbor in self.grid.neighbor_iter(self.shop.elements[ShopElem.EXIT][0]):
+            if type(neighbor) == CustomerAgent:
+                self.grid.remove_agent(neighbor)
+                self.schedule.remove(neighbor)
+                self.c=+1
+
+        if self.c>0:
+            if self.add_new_customer():
+                self.c=-1

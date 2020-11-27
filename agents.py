@@ -62,20 +62,20 @@ class CustomerAgent(Agent):
             self.model.grid.move_agent(self, next_pos)
 
     def go_to_out(self):
-        pos=self.pos
-        if pos[1]==34:
-            if self.model.grid.is_cell_empty((pos[0]-1, pos[1])):
-                self.model.grid.move_agent(self, (pos[0]-1, pos[1]))
-        elif pos[1]==33:
-            if self.model.grid.is_cell_empty((pos[0], pos[1]+1)):
-                self.model.grid.move_agent(self, (pos[0], pos[1]+1))
+        pos = self.pos
+        if pos[1] == 34:
+            if self.model.grid.is_cell_empty((pos[0] - 1, pos[1])):
+                self.model.grid.move_agent(self, (pos[0] - 1, pos[1]))
+        elif pos[1] == 33:
+            if self.model.grid.is_cell_empty((pos[0], pos[1] + 1)):
+                self.model.grid.move_agent(self, (pos[0], pos[1] + 1))
             elif self.model.grid.is_cell_empty((pos[0] + 1, pos[1])):
                 self.model.grid.move_agent(self, (pos[0] + 1, pos[1]))
-        elif pos[1]>26:
-            if self.model.grid.is_cell_empty((pos[0], pos[1]+1)):
-                self.model.grid.move_agent(self, (pos[0], pos[1]+1))
-            elif self.model.grid.is_cell_empty((pos[0]+1, pos[1])):
-                self.model.grid.move_agent(self, (pos[0]+1, pos[1]))
+        elif pos[1] > 26:
+            if self.model.grid.is_cell_empty((pos[0], pos[1] + 1)):
+                self.model.grid.move_agent(self, (pos[0], pos[1] + 1))
+            elif self.model.grid.is_cell_empty((pos[0] + 1, pos[1])):
+                self.model.grid.move_agent(self, (pos[0] + 1, pos[1]))
         else:
             next_pos = (pos[0], 27)
             if self.model.grid.is_cell_empty(next_pos):
@@ -105,8 +105,9 @@ class CustomerAgent(Agent):
         k = 0
         if a[end[0]][end[1]] != 0:
             return [(i, j)]
-        while m[end[0]][end[1]] == 0 and k<50:
+        while m[end[0]][end[1]] == 0:
             k += 1
+            if k > 407: return [self.pos]
             self.make_step(m, a, k)
         i, j = end
         k = m[i][j]
@@ -129,7 +130,6 @@ class CustomerAgent(Agent):
                 the_path.append((i, j))
                 k -= 1
         return the_path
-
 
     def make_step(self, m, a, k):
         for i in range(len(m)):
