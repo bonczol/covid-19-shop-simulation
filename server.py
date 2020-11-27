@@ -1,8 +1,10 @@
+import colorsys
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule, TextElement
 from mesa.visualization.UserParam import UserSettableParameter
 from agents import CustomerAgent, ShelfAgent, BackgroundAgent, CashierAgent, TestAgent
 from shop_elem import ShopElem
+import numpy as np
 
 from model import CovidModel
 
@@ -12,22 +14,33 @@ class SickElement(TextElement):
         pass
 
     def render(self, model):
-        return "Sick agents: " + str(model.sick)
+        return "Sick agents: " + str(model.infections)
 
+
+sick_shelf_colors = [colorsys.hsv_to_rgb(0, s/10, 0.65) for s in range(0, 11)]
+sick_shelf_colors = ['#%02x%02x%02x' % (int(c[0] * 255), int(c[1] * 255), int(c[2] * 255)) for c in sick_shelf_colors]
 
 def schelling_draw(agent):
     if agent is None:
         return
     portrayal = {"Shape": "rect", "w": 1, "h": 1, "Filled": "true", "Layer": 0}
-
     if type(agent) is CustomerAgent:
-        portrayal = {"Shape": "circle", "r": 1, "Filled": "true", "Layer": 0, "Color": "Blue"}
+        portrayal = {"Shape": "circle",
+                     "r": 1 if agent.risk_group is True else 0.6,
+                     "Color": "Red" if agent.sick is True else "Green",
+                     "text": "M" if agent.mask is True else "",
+                     "text_color": "White",
+                     "Filled": "true",
+                     "Layer": 0
+                     }
     elif type(agent) is TestAgent:
         portrayal["Color"] = ["Pink"]
     elif type(agent) is CashierAgent:
         portrayal["Color"] = ["Yellow"]
     elif type(agent) is ShelfAgent:
-        portrayal["Color"] = ["Grey"]
+        portrayal["Color"] = sick_shelf_colors[agent.sick_level]
+        portrayal["text"] = agent.sick_level
+        portrayal["text_color"] = "White"
     elif type(agent) is BackgroundAgent:
         if agent.type == ShopElem.WALL:
             portrayal["Color"] = ["Black"]
@@ -40,7 +53,7 @@ def schelling_draw(agent):
 
 
 sick_element = SickElement()
-canvas_element = CanvasGrid(schelling_draw, 24, 35, 500, 500)
+canvas_element = CanvasGrid(schelling_draw, 24, 35, 650, 650)
 sick_chart = ChartModule([{"Label": "sick", "Color": "Black"}])
 
 # TODO uzupenic braukjące parametry

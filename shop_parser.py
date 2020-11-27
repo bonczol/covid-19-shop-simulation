@@ -34,3 +34,5 @@ class ShopParser:
             return x, y + 1
 
 
+
+

@@ -40,7 +40,7 @@ class ShopGenerator:
         self._draw_shop_borders()
         self._draw_shop_checkouts()
         self._draw_entry_and_exit()
-        self.plot()
+        # self.plot()
 
     def _draw_shop_center(self):
         # Calculate height/width to fill space with given number of shelves
