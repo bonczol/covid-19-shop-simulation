@@ -80,6 +80,8 @@ class CustomerAgent(Agent):
             next_pos = (pos[0], 28)
             if self.model.grid.is_cell_empty(next_pos):
                 self.shopping_list.append(next_pos)
+            elif self.model.grid.is_cell_empty((pos[0]+1, pos[1])):
+                self.shopping_list.append((pos[0]+1, pos[1]))
 
     def get_grid(self):
         grid = []
