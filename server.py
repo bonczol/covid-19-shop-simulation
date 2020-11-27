@@ -37,6 +37,8 @@ def schelling_draw(agent):
         portrayal["Color"] = ["Pink"]
     elif type(agent) is CashierAgent:
         portrayal["Color"] = ["Yellow"]
+        portrayal["Shape"] = "circle"
+        portrayal["r"] = 1
     elif type(agent) is ShelfAgent:
         portrayal["Color"] = sick_shelf_colors[agent.sick_level]
         portrayal["text"] = agent.sick_level
@@ -53,13 +55,13 @@ def schelling_draw(agent):
 
 
 sick_element = SickElement()
-canvas_element = CanvasGrid(schelling_draw, 24, 35, 650, 650)
+canvas_element = CanvasGrid(schelling_draw, 26, 37, 650, 650)
 sick_chart = ChartModule([{"Label": "sick", "Color": "Black"}])
 
 # TODO uzupenic braukjące parametry
 model_params = {
-    "height": 24,
-    "width": 35
+    "height": 26,
+    "width": 37
     # ,
     # "density": UserSettableParameter("slider", "Agent density", 0.8, 0.1, 1.0, 0.1),
     # "minority_pc": UserSettableParameter(

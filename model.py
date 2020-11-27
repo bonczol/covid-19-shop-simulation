@@ -18,7 +18,7 @@ class CovidModel(Model):
                  sick_percent=0.1,
                  mask_percent=0.5,
                  risk_group_percent=0.5,
-                 sick_shelf_percent=0.1,
+                 sick_shelf_percent=0,
                  death_ratio=0.3,
                  virus_duration=20,
                  num_customers=20):
@@ -90,6 +90,7 @@ class CovidModel(Model):
 
     def spawn_background(self, type_):
         for coord in self.shop.elements[type_]:
+            print(coord)
             agent = BackgroundAgent(self.get_id(), self, coord, type_=type_)
             self.grid.place_agent(agent, coord)
 

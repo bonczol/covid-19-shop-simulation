@@ -39,6 +39,7 @@ class ShopGenerator:
         self._draw_shop_center()
         self._draw_shop_borders()
         self._draw_shop_checkouts()
+        self._draw_walls()
         self._draw_entry_and_exit()
         # self.plot()
 
@@ -90,6 +91,13 @@ class ShopGenerator:
 
         self.map_ = np.vstack((self.map_, section))
 
+    def _draw_walls(self):
+        side_wall = np.full((self.map_.shape[0], 1), ShopElem.WALL.value)
+        self.map_ = np.hstack((side_wall, self.map_, side_wall))
+
+        top_bottom_wall = np.full((1, self.map_.shape[1]), ShopElem.WALL.value)
+        self.map_ = np.vstack((top_bottom_wall, self.map_, top_bottom_wall))
+
     def _draw_entry_and_exit(self):
-        self.map_[-1, -1] = ShopElem.ENTRY.value
-        self.map_[-1, -3] = ShopElem.EXIT.value
+        self.map_[-1, -2] = ShopElem.ENTRY.value
+        self.map_[-1, -4] = ShopElem.EXIT.value
