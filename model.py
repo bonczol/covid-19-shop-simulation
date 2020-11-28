@@ -41,8 +41,8 @@ class CovidModel(Model):
         # Infection params - by cough
         self.carrier_mask_neighbour_mask = 0.015
         self.carrier_mask_neighbour_no_mask = 0.05
-        self.carrier_no_mask_neighbour_mask = 0.7
-        self.carrier_no_mask_neighbour_no_mask = 0.85
+        self.carrier_no_mask_neighbour_mask = 0.3
+        self.carrier_no_mask_neighbour_no_mask = 0.9
 
         # Infection params - by touch
         self.infect_shelf_prob = infect_shelf_prob
