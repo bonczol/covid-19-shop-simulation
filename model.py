@@ -20,6 +20,11 @@ class CovidModel(Model):
                  risk_group_percent=0.5,
                  sick_shelf_percent=0,
                  death_ratio=0.3,
+                 death_ratio_rg=0.3,
+                 infect_shelf_prob=0.3,
+                 touch_face_prob=0.3,
+                 max_shelf_sick_level=10,
+                 is_cashier_masked=True,
                  virus_duration=20,
                  num_customers=20):
 
@@ -30,7 +35,8 @@ class CovidModel(Model):
         self.sick_shelf_percent = sick_shelf_percent
         self.death_ratio = death_ratio
         self.virus_duration = virus_duration
-        self.c =0
+        self.is_cashier_masked = is_cashier_masked
+        self.c = 0
 
         # Infection params - by cough
         self.carrier_mask_neighbour_mask = 0.015
@@ -39,9 +45,9 @@ class CovidModel(Model):
         self.carrier_no_mask_neighbour_no_mask = 0.85
 
         # Infection params - by touch
-        self.infect_shelf_prob = 0.5
-        self.max_shelf_sick_level = 10
-        self.touch_face_prob = 0.5
+        self.infect_shelf_prob = infect_shelf_prob
+        self.max_shelf_sick_level = max_shelf_sick_level
+        self.touch_face_prob = touch_face_prob
 
         # Customer's shopping list distribution params
         self.max_shopping_list = 13
@@ -108,7 +114,7 @@ class CovidModel(Model):
 
     def spawn_cashiers(self):
         for coord in self.shop.elements[ShopElem.CASHIER]:
-            cashier = CashierAgent(self.get_id(), self, coord)
+            cashier = CashierAgent(self.get_id(), self, coord, self.is_cashier_masked)
             self.grid.place_agent(cashier, coord)
             self.schedule.add(cashier)
 
@@ -127,9 +133,9 @@ class CovidModel(Model):
     def add_new_customer(self):
         x, y = self.shop.elements[ShopElem.ENTRY][0]
         if self.grid.is_cell_empty((x, y - 1)):
-            sick = shuffled_bools(1, self.sick_percent)[0]
-            mask = shuffled_bools(1, self.mask_percent)[0]
-            risk_group = shuffled_bools(1, self.risk_group_percent)[0]
+            sick = random_bool(self.sick_percent)
+            mask = random_bool(self.mask_percent)
+            risk_group = random_bool(self.risk_group_percent)
             customer = CustomerAgent(self.get_id(), self, (x, y - 1),  sick, mask, risk_group)
             self.grid.place_agent(customer, (x, y - 1))
             self.schedule.add(customer)

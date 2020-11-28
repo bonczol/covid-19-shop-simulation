@@ -166,7 +166,7 @@ class CustomerAgent(Agent):
 
 # TODO
 class CashierAgent(Agent):
-    def __init__(self, unique_id, model, pos):
+    def __init__(self, unique_id, model, pos, is_masked):
         super().__init__(unique_id, model)
         self.pos = pos
 
