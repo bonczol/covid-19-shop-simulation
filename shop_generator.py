@@ -6,8 +6,7 @@ from shop_elem import ShopElem
 
 
 class ShopGenerator:
-    def __init__(self, rows, shelves_in_row, shelf_length, space_between_rows, space_between_shelves, checkout_height=5,
-                 checkouts_num=4):
+    def __init__(self, rows, shelves_in_row, shelf_length, space_between_rows, space_between_shelves, checkout_height=5, checkouts_num=4):
         self.rows = rows
         self.shelves_in_row = shelves_in_row
         self.shelf_length = shelf_length
@@ -41,7 +40,6 @@ class ShopGenerator:
         self._draw_shop_checkouts()
         self._draw_walls()
         self._draw_entry_and_exit()
-        # self.plot()
 
     def _draw_shop_center(self):
         # Calculate height/width to fill space with given number of shelves
@@ -75,13 +73,14 @@ class ShopGenerator:
 
         # Checkouts
         checkouts_end = self.checkouts_num * 3
+
         for y in np.arange(checkouts_end, step=3):
-            section[0:self.checkout_height, y:y + 2] = ShopElem.WALL.value
-            section[self.checkout_height - 1, y + 1] = ShopElem.CASHIER.value  # Put cashier in down-right corner
+            section[:self.checkout_height, y] = ShopElem.WALL.value
+            section[self.checkout_height - 1, y] = ShopElem.CASHIER.value  # Put cashier in down-right corner
+            section[:self.checkout_height, y + 2] = ShopElem.WALL.value
 
         # Separation between shop and checkout
         section[0, checkouts_end: -2] = ShopElem.WALL.value
-        section[0:self.checkout_height, checkouts_end] = ShopElem.WALL.value
 
         # Entrance corridor
         section[:, section.shape[1] - 2] = ShopElem.WALL.value

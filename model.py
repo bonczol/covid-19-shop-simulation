@@ -4,7 +4,7 @@ from mesa import Model
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
 
-from agents import CustomerAgent, CashierAgent, ShelfAgent, BackgroundAgent, TestAgent
+from agents import CustomerAgent, CashierAgent, ShelfAgent, BackgroundAgent
 from shop_generator import ShopGenerator
 from shop_elem import ShopElem
 from shop_parser import ShopParser
@@ -15,12 +15,14 @@ class CovidModel(Model):
     def __init__(self,
                  width,
                  height,
-                 sick_percent=0.1,
+                 sick_percent=0.15,
                  mask_percent=0.5,
                  risk_group_percent=0.5,
                  sick_shelf_percent=0,
-                 death_ratio=0.3,
-                 virus_duration=20,
+                 death_ratio=0.1,
+                 death_ratio_risk=0.3,
+                 virus_duration=50,
+                 cashiers_masks=False,
                  num_customers=20):
 
         self.num_customers = num_customers
@@ -29,7 +31,9 @@ class CovidModel(Model):
         self.sick_percent = sick_percent
         self.sick_shelf_percent = sick_shelf_percent
         self.death_ratio = death_ratio
+        self.death_ratio_risk = death_ratio_risk
         self.virus_duration = virus_duration
+        self.cashiers_mask = cashiers_masks
         self.c = 0
 
         # Infection params - by cough
@@ -39,7 +43,7 @@ class CovidModel(Model):
         self.carrier_no_mask_neighbour_no_mask = 0.9
 
         # Infection params - by touch
-        self.infect_shelf_prob = 0.2
+        self.infect_shelf_prob = 1
         self.max_shelf_sick_level = 10
         self.touch_face_prob = 0.2
 
@@ -91,7 +95,6 @@ class CovidModel(Model):
 
     def spawn_background(self, type_):
         for coord in self.shop.elements[type_]:
-            print(coord)
             agent = BackgroundAgent(self.get_id(), self, coord, type_=type_)
             self.grid.place_agent(agent, coord)
 
@@ -108,18 +111,18 @@ class CovidModel(Model):
 
     def spawn_cashiers(self):
         for coord in self.shop.elements[ShopElem.CASHIER]:
-            cashier = CashierAgent(self.get_id(), self, coord)
+            cashier = CashierAgent(self.get_id(), self, coord, self.cashiers_mask)
             self.grid.place_agent(cashier, coord)
             self.schedule.add(cashier)
 
     def spawn_shelves(self):
         num_shelves = len(self.shop.elements[ShopElem.SHELF])
         sick_arr = shuffled_bools(num_shelves, self.sick_shelf_percent)
-        desc_counter_arr = random.choices(range(0, self.virus_duration), k=num_shelves)
 
-        for shelf, sick, desc_counter in zip(self.shop.elements[ShopElem.SHELF], sick_arr, desc_counter_arr):
+        for shelf, sick in zip(self.shop.elements[ShopElem.SHELF], sick_arr):
             coord, _ = shelf
             sick_level = random.randint(1, self.max_shelf_sick_level) if sick else 0
+            desc_counter = random.randint(1, self.virus_duration) if sick else 0
             shelf_agent = ShelfAgent(self.get_id(), self, coord, sick_level=sick_level, desc_counter=desc_counter)
             self.grid.place_agent(shelf_agent, coord)
             self.schedule.add(shelf_agent)

@@ -2,7 +2,7 @@ import colorsys
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule, TextElement
 from mesa.visualization.UserParam import UserSettableParameter
-from agents import CustomerAgent, ShelfAgent, BackgroundAgent, CashierAgent, TestAgent
+from agents import CustomerAgent, ShelfAgent, BackgroundAgent, CashierAgent, HumanAgent
 from shop_elem import ShopElem
 import numpy as np
 
@@ -24,21 +24,19 @@ def schelling_draw(agent):
     if agent is None:
         return
     portrayal = {"Shape": "rect", "w": 1, "h": 1, "Filled": "true", "Layer": 0}
-    if type(agent) is CustomerAgent:
+
+    if isinstance(agent, HumanAgent):
         portrayal = {"Shape": "circle",
-                     "r": 1 if agent.risk_group is True else 0.6,
-                     "Color": "Red" if agent.sick is True else "Green",
                      "text": "M" if agent.mask is True else "",
                      "text_color": "White",
+                     "Color": "Red" if agent.sick is True else "Green",
                      "Filled": "true",
                      "Layer": 0
                      }
-    elif type(agent) is TestAgent:
-        portrayal["Color"] = ["Pink"]
-    elif type(agent) is CashierAgent:
-        portrayal["Color"] = ["Yellow"]
-        portrayal["Shape"] = "circle"
-        portrayal["r"] = 1
+        if type(agent) is CustomerAgent:
+            portrayal["r"] = 1 if agent.risk_group is True else 0.6,
+        elif type(agent) is CashierAgent:
+            portrayal["r"] = 1
     elif type(agent) is ShelfAgent:
         portrayal["Color"] = sick_shelf_colors[agent.sick_level]
         portrayal["text"] = agent.sick_level

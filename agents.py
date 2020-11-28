@@ -7,52 +7,71 @@ from helper import randint_normal
 from helper import random_bool
 
 
-class CustomerAgent(Agent):
-    # TODO uzupenic braukjące parametry
+class HumanAgent(Agent):
     def __init__(self, unique_id, model, pos, sick, mask, risk_group):
         super().__init__(unique_id, model)
         self.pos = pos
         self.sick = sick
         self.mask = mask
         self.risk_group = risk_group
-        self.shopping_list = self.get_shopping_list()
 
-    def step(self):
-        for neighbor in self.model.grid.neighbor_iter(self.pos):
-            # Infect another customer
-            if self.sick and type(neighbor) == CustomerAgent and not neighbor.sick:
-                if random_bool(self.get_infection_prob(neighbor)):
-                    neighbor.get_sick()
-            elif self.shopping_list and neighbor.pos == self.shopping_list[0] and type(neighbor) == ShelfAgent:
-                # Infect shelf
-                if self.sick:
-                    if random_bool(self.model.infect_shelf_prob):
-                        neighbor.get_sick()
-                # Get infected by shelf
-                else:
-                    if random_bool(neighbor.get_infection_prob()):
-                        self.get_sick()
+    def try_infect(self, neighbor):
+        if random_bool(self.get_infection_prob(neighbor)):
+            neighbor.get_sick()
 
-        if self.shopping_list:
-            self.move()
-            if self.pos == self.shopping_list[0]:
-                self.shopping_list.pop(0)
+    def get_infection_prob(self, neighbour):
+        if self.mask:
+            if neighbour.mask:
+                return self.model.carrier_mask_neighbour_mask
+            else:
+                return self.model.carrier_mask_neighbour_no_mask
         else:
-            self.go_to_out()
+            if neighbour.mask:
+                return self.model.carrier_no_mask_neighbour_mask
+            else:
+                return self.model.carrier_no_mask_neighbour_no_mask
 
     def get_sick(self):
         self.sick = True
         self.model.infections += 1
-        self.model.deaths += int(random_bool(self.model.death_ratio))
+        death_prob = self.model.death_ratio_risk if self.risk_group else self.model.death_ratio
+        self.model.deaths += int(random_bool(death_prob))
+
+
+class CustomerAgent(HumanAgent):
+    def __init__(self, unique_id, model, pos, sick, mask, risk_group):
+        super().__init__(unique_id, model, pos, sick, mask, risk_group)
+        self.shopping_list = self.get_shopping_list()
+
+    def step(self):
+        for neighbor in self.model.grid.neighbor_iter(self.pos):
+            if self.sick and isinstance(neighbor, HumanAgent) and not neighbor.sick:
+                neighbor.try_infect(neighbor)
+            elif self.shopping_list and neighbor.pos == self.shopping_list[0][0] and type(neighbor) == ShelfAgent:
+                if self.sick:
+                    self.try_infect_shelf(neighbor)
+                else:
+                    neighbor.try_infect(self)
+
+        if self.shopping_list:
+            self.move()
+            if self.pos == self.shopping_list[0][1]:
+                self.shopping_list.pop(0)
+        else:
+            self.go_to_out()
+
+    def try_infect_shelf(self, shelf):
+        if random_bool(self.model.infect_shelf_prob):
+            shelf.get_sick()
 
     def get_shopping_list(self):
         list_len = randint_normal(1, self.model.max_shopping_list, self.model.mean_shopping_list,
                                   self.model.std_dev_shopping_list)
         shopping_list = random.sample(self.model.shop.elements[ShopElem.SHELF], list_len)
-        return [shelf_access for _, shelf_access in shopping_list]
+        return shopping_list
 
     def move(self):
-        a = self.find_path(self.shopping_list[0])
+        a = self.find_path(self.shopping_list[0][1])
         if len(a) > 1:
             next_pos = a[-2]
         else:
@@ -79,9 +98,9 @@ class CustomerAgent(Agent):
         else:
             next_pos = (pos[0], 28)
             if self.model.grid.is_cell_empty(next_pos):
-                self.shopping_list.append(next_pos)
+                self.shopping_list.append((next_pos, next_pos))
             elif self.model.grid.is_cell_empty((pos[0]+1, pos[1])):
-                self.shopping_list.append((pos[0]+1, pos[1]))
+                self.shopping_list.append((pos[0]+1, pos[1], pos[0]+1, pos[1]))
 
     def get_grid(self):
         grid = []
@@ -133,7 +152,6 @@ class CustomerAgent(Agent):
                 k -= 1
         return the_path
 
-
     def make_step(self, m, a, k):
         for i in range(len(m)):
             for j in range(len(m[i])):
@@ -147,28 +165,15 @@ class CustomerAgent(Agent):
                     if j < len(m[i]) - 1 and m[i][j + 1] == 0 and a[i][j + 1] == 0:
                         m[i][j + 1] = k + 1
 
-    def get_infection_prob(self, neighbour):
-        if self.mask:
-            if neighbour.mask:
-                return self.model.carrier_mask_neighbour_mask
-            else:
-                return self.model.carrier_mask_neighbour_no_mask
-        else:
-            if neighbour.mask:
-                return self.model.carrier_no_mask_neighbour_mask
-            else:
-                return self.model.carrier_no_mask_neighbour_no_mask
 
-    def is_infected(self, neighbour):
-        p = self.get_infection_prob(neighbour)
-        return random_bool(p)
+class CashierAgent(HumanAgent):
+    def __init__(self, unique_id, model, pos, mask):
+        super().__init__(unique_id, model, pos, False, mask, False)
 
-
-# TODO
-class CashierAgent(Agent):
-    def __init__(self, unique_id, model, pos):
-        super().__init__(unique_id, model)
-        self.pos = pos
+    def step(self):
+        for neighbor in self.model.grid.neighbor_iter(self.pos):
+            if self.sick and type(neighbor) == CustomerAgent and not neighbor.sick:
+                neighbor.try_infect(neighbor)
 
 
 class ShelfAgent(Agent):
@@ -182,15 +187,19 @@ class ShelfAgent(Agent):
         if self.sick_level < 10:
             self.sick_level += 1
 
+    def try_infect(self, neighbor):
+        if random_bool(self.get_infection_prob()):
+            neighbor.get_sick()
+
     def get_infection_prob(self):
         return (self.sick_level / self.model.max_shelf_sick_level) * self.model.touch_face_prob
 
     def step(self):
-        if self.sick_level > 0 and self.desc_counter > self.model.virus_duration:
-            self.sick_level -= 1
-            self.desc_counter = 0
-
-        self.desc_counter += 1
+        if self.sick_level > 0:
+            self.desc_counter += 1
+            if self.desc_counter > self.model.virus_duration:
+                self.sick_level -= 1
+                self.desc_counter = 0
 
 
 class BackgroundAgent(Agent):
@@ -199,7 +208,3 @@ class BackgroundAgent(Agent):
         self.pos = pos
         self.type = type_
 
-
-class TestAgent(Agent):
-    def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
