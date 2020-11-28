@@ -168,8 +168,8 @@ class CustomerAgent(HumanAgent):
 
 
 class CashierAgent(HumanAgent):
-    def __init__(self, unique_id, model, pos, mask):
-        super().__init__(unique_id, model, pos, False, mask, False)
+    def __init__(self, unique_id, model, pos, sick, mask):
+        super().__init__(unique_id, model, pos, sick, mask, False)
 
     def step(self):
         for neighbor in self.model.grid.neighbor_iter(self.pos):

@@ -17,6 +17,7 @@ class CovidModel(Model):
                  mask_percent=0.5,
                  risk_group_percent=0.5,
                  sick_shelf_percent=0,
+                 sick_cashiers_num=2,
                  death_ratio=0.1,
                  death_ratio_rg=0.3,
                  infect_shelf_prob=0.3,
@@ -24,13 +25,16 @@ class CovidModel(Model):
                  max_shelf_sick_level=10,
                  virus_duration=50,
                  cashiers_masks=False,
+                 num_cashiers=4,
                  num_customers=20):
 
         self.num_customers = num_customers
+        self.num_cashiers = num_cashiers
         self.mask_percent = mask_percent
         self.risk_group_percent = risk_group_percent
         self.sick_percent = sick_percent
         self.sick_shelf_percent = sick_shelf_percent
+        self.sick_cashiers_num = sick_cashiers_num
         self.death_ratio = death_ratio
         self.death_ratio_rg = death_ratio_rg
         self.infect_shelf_prob = infect_shelf_prob
@@ -55,7 +59,8 @@ class CovidModel(Model):
                                  shelves_in_row=5,
                                  shelf_length=10,
                                  space_between_rows=3,
-                                 space_between_shelves=2
+                                 space_between_shelves=2,
+                                 checkouts_num=num_cashiers
                                  ).map_
         self.shop = ShopParser()
         self.shop.parse(shop_map)
@@ -110,8 +115,9 @@ class CovidModel(Model):
             self.schedule.add(customer)
 
     def spawn_cashiers(self):
-        for coord in self.shop.elements[ShopElem.CASHIER]:
-            cashier = CashierAgent(self.get_id(), self, coord, self.cashiers_mask)
+        sick_arr = shuffled_bools(self.num_cashiers, self.sick_cashiers_num / self.num_cashiers)
+        for coord, sick in zip(self.shop.elements[ShopElem.CASHIER], sick_arr):
+            cashier = CashierAgent(self.get_id(), self, coord, sick, self.cashiers_mask)
             self.grid.place_agent(cashier, coord)
             self.schedule.add(cashier)
 
