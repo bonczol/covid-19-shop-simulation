@@ -8,13 +8,11 @@ from agents import CustomerAgent, CashierAgent, ShelfAgent, BackgroundAgent
 from shop_generator import ShopGenerator
 from shop_elem import ShopElem
 from shop_parser import ShopParser
-from helper import  random_bool, shuffled_bools
+from helper import random_bool, shuffled_bools
 
 
 class CovidModel(Model):
     def __init__(self,
-                 width,
-                 height,
                  sick_percent=0.15,
                  mask_percent=0.5,
                  risk_group_percent=0.5,
@@ -70,9 +68,10 @@ class CovidModel(Model):
         self.infections = 0
         self.deaths = 0
         self.datacollector = DataCollector(
-            {"infections": "infections"},
-            # {"deaths": "deaths"},
-            {"x": lambda a: a.pos[0], "y": lambda a: a.pos[1]},
+            model_reporters={
+                "infections": "infections",
+                "deaths": "deaths"
+            }
         )
 
         self.agent_id = 0
@@ -134,7 +133,7 @@ class CovidModel(Model):
             sick = random_bool(self.sick_percent)
             mask = random_bool(self.mask_percent)
             risk_group = random_bool(self.risk_group_percent)
-            customer = CustomerAgent(self.get_id(), self, (x, y - 1),  sick, mask, risk_group)
+            customer = CustomerAgent(self.get_id(), self, (x, y - 1), sick, mask, risk_group)
             self.grid.place_agent(customer, (x, y - 1))
             self.schedule.add(customer)
             return True
@@ -150,8 +149,8 @@ class CovidModel(Model):
             if type(neighbor) == CustomerAgent:
                 self.grid.remove_agent(neighbor)
                 self.schedule.remove(neighbor)
-                self.c=+1
+                self.c = +1
 
-        if self.c>0:
+        if self.c > 0:
             if self.add_new_customer():
-                self.c=-1
+                self.c = -1

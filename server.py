@@ -54,12 +54,15 @@ def schelling_draw(agent):
 
 sick_element = SickElement()
 canvas_element = CanvasGrid(schelling_draw, 26, 37, 650, 650)
-sick_chart = ChartModule([{"Label": "sick", "Color": "Black"}])
+sick_chart = ChartModule(
+    [
+        {"Label": "infections", "Color": "Black"},
+        {"Label": "deaths", "Color": "Red"},
+     ]
+)
 
 # TODO uzupenic braukjące parametry
 model_params = {
-    "height": 26,
-    "width": 37,
     "num_customers": UserSettableParameter("slider", "Liczba osób w sklepie", 10, 1, 40, 1),
     "sick_percent": UserSettableParameter("slider", "Procent ludzi chorych wchodzących", 0.2, 0.00, 1.0, 0.05),
     "mask_percent": UserSettableParameter("slider", "Procent ludzi noszących maseczki", 0.2, 0.00, 1.0, 0.05),
