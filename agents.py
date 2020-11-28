@@ -14,6 +14,7 @@ class HumanAgent(Agent):
         self.sick = sick
         self.mask = mask
         self.risk_group = risk_group
+        self.infected=sick
 
     def try_infect(self, neighbor):
         if random_bool(self.get_infection_prob(neighbor)):
@@ -32,7 +33,7 @@ class HumanAgent(Agent):
                 return self.model.carrier_no_mask_neighbour_no_mask
 
     def get_sick(self):
-        self.sick = True
+        self.infected = True
         self.model.infections += 1
         death_prob = self.model.death_ratio_rg if self.risk_group else self.model.death_ratio
         self.model.deaths += int(random_bool(death_prob))

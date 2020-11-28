@@ -33,6 +33,13 @@ def schelling_draw(agent):
                      "Filled": "true",
                      "Layer": 0
                      }
+        if  agent.sick:
+            portrayal["Color"] = ["Red"]
+        elif agent.infected:
+            portrayal["Color"] = ["Yellow"]
+        else:
+            portrayal["Color"] = ["Green"]
+
         if type(agent) is CustomerAgent:
             portrayal["r"] = 1 if agent.risk_group is True else 0.6,
         elif type(agent) is CashierAgent:
