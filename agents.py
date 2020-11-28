@@ -34,7 +34,7 @@ class HumanAgent(Agent):
     def get_sick(self):
         self.sick = True
         self.model.infections += 1
-        death_prob = self.model.death_ratio_risk if self.risk_group else self.model.death_ratio
+        death_prob = self.model.death_ratio_rg if self.risk_group else self.model.death_ratio
         self.model.deaths += int(random_bool(death_prob))
 
 

@@ -68,7 +68,7 @@ model_params = {
     "death_ratio_rg": UserSettableParameter("slider", "Śmiertelność dla grupy wysokiego ryzyka", 0.2, 0.00, 1.0, 0.05),
     "infect_shelf_prob": UserSettableParameter("slider", "Prawdopodobieństwo zakażenia półki", 0.2, 0.00, 1.0, 0.05),
     "max_shelf_sick_level": UserSettableParameter("slider", "Czas utrzymywania się wirusa na półce", 10, 1, 15, 1),
-    "is_cashier_masked": UserSettableParameter("checkbox", "Kasjerzy w maseczkach", value=True)
+    "cashiers_masks": UserSettableParameter("checkbox", "Kasjerzy w maseczkach", value=True)
 }
 
 

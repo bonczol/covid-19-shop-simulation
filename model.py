@@ -20,7 +20,10 @@ class CovidModel(Model):
                  risk_group_percent=0.5,
                  sick_shelf_percent=0,
                  death_ratio=0.1,
-                 death_ratio_risk=0.3,
+                 death_ratio_rg=0.3,
+                 infect_shelf_prob=0.3,
+                 touch_face_prob=0.3,
+                 max_shelf_sick_level=10,
                  virus_duration=50,
                  cashiers_masks=False,
                  num_customers=20):
@@ -31,7 +34,10 @@ class CovidModel(Model):
         self.sick_percent = sick_percent
         self.sick_shelf_percent = sick_shelf_percent
         self.death_ratio = death_ratio
-        self.death_ratio_risk = death_ratio_risk
+        self.death_ratio_rg = death_ratio_rg
+        self.infect_shelf_prob = infect_shelf_prob
+        self.touch_face_prob = touch_face_prob
+        self.max_shelf_sick_level = max_shelf_sick_level
         self.virus_duration = virus_duration
         self.cashiers_mask = cashiers_masks
         self.c = 0
@@ -41,11 +47,6 @@ class CovidModel(Model):
         self.carrier_mask_neighbour_no_mask = 0.05
         self.carrier_no_mask_neighbour_mask = 0.3
         self.carrier_no_mask_neighbour_no_mask = 0.9
-
-        # Infection params - by touch
-        self.infect_shelf_prob = 1
-        self.max_shelf_sick_level = 10
-        self.touch_face_prob = 0.2
 
         # Customer's shopping list distribution params
         self.max_shopping_list = 13
