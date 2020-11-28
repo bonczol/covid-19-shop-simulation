@@ -30,18 +30,18 @@ class CovidModel(Model):
         self.sick_shelf_percent = sick_shelf_percent
         self.death_ratio = death_ratio
         self.virus_duration = virus_duration
-        self.c =0
+        self.c = 0
 
         # Infection params - by cough
         self.carrier_mask_neighbour_mask = 0.015
         self.carrier_mask_neighbour_no_mask = 0.05
-        self.carrier_no_mask_neighbour_mask = 0.7
-        self.carrier_no_mask_neighbour_no_mask = 0.85
+        self.carrier_no_mask_neighbour_mask = 0.3
+        self.carrier_no_mask_neighbour_no_mask = 0.9
 
         # Infection params - by touch
-        self.infect_shelf_prob = 0.5
+        self.infect_shelf_prob = 0.2
         self.max_shelf_sick_level = 10
-        self.touch_face_prob = 0.5
+        self.touch_face_prob = 0.2
 
         # Customer's shopping list distribution params
         self.max_shopping_list = 13
@@ -127,9 +127,9 @@ class CovidModel(Model):
     def add_new_customer(self):
         x, y = self.shop.elements[ShopElem.ENTRY][0]
         if self.grid.is_cell_empty((x, y - 1)):
-            sick = shuffled_bools(1, self.sick_percent)[0]
-            mask = shuffled_bools(1, self.mask_percent)[0]
-            risk_group = shuffled_bools(1, self.risk_group_percent)[0]
+            sick = random_bool(self.sick_percent)
+            mask = random_bool(self.mask_percent)
+            risk_group = random_bool(self.risk_group_percent)
             customer = CustomerAgent(self.get_id(), self, (x, y - 1),  sick, mask, risk_group)
             self.grid.place_agent(customer, (x, y - 1))
             self.schedule.add(customer)
