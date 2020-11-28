@@ -43,6 +43,7 @@ class CustomerAgent(HumanAgent):
     def __init__(self, unique_id, model, pos, sick, mask, risk_group):
         super().__init__(unique_id, model, pos, sick, mask, risk_group)
         self.shopping_list = self.get_shopping_list()
+        self.path_cache=[]
 
     def step(self):
         for neighbor in self.model.grid.neighbor_iter(self.pos):
@@ -72,14 +73,20 @@ class CustomerAgent(HumanAgent):
         return shopping_list
 
     def move(self):
+        if self.path_cache:
+            if self.model.grid.is_cell_empty(self.path_cache[-1]):
+                self.model.grid.move_agent(self, self.path_cache.pop(-1))
+                return
+            else:
+                self.path_cache=[]
+
         a = self.find_path(self.shopping_list[0][1])
         if len(a) > 1:
-            next_pos = a[-2]
-        else:
-            next_pos = a[0]
+            a.pop(-1)
 
-        if self.model.grid.is_cell_empty(next_pos):
-            self.model.grid.move_agent(self, next_pos)
+        if self.model.grid.is_cell_empty(a[-1]):
+            self.model.grid.move_agent(self, a.pop(-1))
+            self.path_cache=a
 
     def go_to_out(self):
         pos=self.pos
@@ -185,8 +192,7 @@ class ShelfAgent(Agent):
         self.desc_counter = desc_counter
 
     def get_sick(self):
-        if self.sick_level < 10:
-            self.sick_level += 1
+        self.sick_level = self.model.max_shelf_sick_level
 
     def try_infect(self, neighbor):
         if random_bool(self.get_infection_prob()):
