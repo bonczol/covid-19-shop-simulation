@@ -59,14 +59,18 @@ sick_chart = ChartModule([{"Label": "sick", "Color": "Black"}])
 # TODO uzupenic braukjące parametry
 model_params = {
     "height": 26,
-    "width": 37
-    # ,
-    # "density": UserSettableParameter("slider", "Agent density", 0.8, 0.1, 1.0, 0.1),
-    # "minority_pc": UserSettableParameter(
-    #     "slider", "Fraction minority", 0.2, 0.00, 1.0, 0.05
-    # ),
-    # "homophily": UserSettableParameter("slider", "Homophily", 3, 0, 8, 1),
+    "width": 37,
+    "num_customers": UserSettableParameter("slider", "Liczba osób w sklepie", 10, 1, 40, 1),
+    "sick_percent": UserSettableParameter("slider", "Procent ludzi chorych wchodzących", 0.2, 0.00, 1.0, 0.05),
+    "mask_percent": UserSettableParameter("slider", "Procent ludzi noszących maseczki", 0.2, 0.00, 1.0, 0.05),
+    "risk_group_percent": UserSettableParameter("slider", "Procent należących do grupy wysokiego ryzyka", 0.2, 0.00, 1.0, 0.05),
+    "death_ratio": UserSettableParameter("slider", "Śmiertelność dla grupy niskiego ryzyka", 0.2, 0.00, 1.0, 0.05),
+    "death_ratio_rg": UserSettableParameter("slider", "Śmiertelność dla grupy wysokiego ryzyka", 0.2, 0.00, 1.0, 0.05),
+    "infect_shelf_prob": UserSettableParameter("slider", "Prawdopodobieństwo zakażenia półki", 0.2, 0.00, 1.0, 0.05),
+    "max_shelf_sick_level": UserSettableParameter("slider", "Czas utrzymywania się wirusa na półce", 10, 1, 15, 1),
+    "is_cashier_masked": UserSettableParameter("checkbox", "Kasjerzy w maseczkach", value=True)
 }
+
 
 server = ModularServer(
     CovidModel, [canvas_element, sick_element, sick_chart], "Covid", model_params
