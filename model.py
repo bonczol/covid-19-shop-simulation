@@ -158,4 +158,4 @@ class CovidModel(Model):
 
         if self.c > 0:
             if self.add_new_customer():
-                self.c = -1
+                self.c -= 1

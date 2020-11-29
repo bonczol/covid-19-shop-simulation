@@ -73,6 +73,14 @@ class CustomerAgent(HumanAgent):
         return shopping_list
 
     def move(self):
+        pos=self.pos
+        if pos[0]==1:
+            if self.model.grid.is_cell_empty((pos[0]+1, pos[1])):
+                self.model.grid.move_agent(self, (pos[0]+1, pos[1]))
+            elif self.model.grid.is_cell_empty((pos[0], pos[1]-1)):
+                self.model.grid.move_agent(self, (pos[0], pos[1]-1))
+            return
+
         if self.path_cache:
             if self.model.grid.is_cell_empty(self.path_cache[-1]):
                 self.model.grid.move_agent(self, self.path_cache.pop(-1))
