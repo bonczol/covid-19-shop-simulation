@@ -69,7 +69,6 @@ class CovidModel(Model):
         self.grid = SingleGrid(self.width, self.height, False)
         self.schedule = RandomActivation(self)
 
-        # TODO dodac zbieranie statystyk
         self.infections = 0
         self.deaths = 0
         self.datacollector = DataCollector(

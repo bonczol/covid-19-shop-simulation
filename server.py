@@ -68,7 +68,6 @@ sick_chart = ChartModule(
      ]
 )
 
-# TODO uzupenic braukjące parametry
 model_params = {
     "num_customers": UserSettableParameter("slider", "Liczba osób w sklepie", 10, 1, 40, 1),
     "sick_percent": UserSettableParameter("slider", "Procent ludzi chorych wchodzących", 0.2, 0.00, 1.0, 0.05),
