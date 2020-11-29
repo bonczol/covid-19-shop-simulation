@@ -6,7 +6,8 @@ from shop_elem import ShopElem
 
 
 class ShopGenerator:
-    def __init__(self, rows, shelves_in_row, shelf_length, space_between_rows, space_between_shelves, checkout_height=5, checkouts_num=4):
+    def __init__(self, rows, shelves_in_row, shelf_length, space_between_rows, space_between_shelves, checkout_height=5,
+                 checkouts_num=4):
         self.rows = rows
         self.shelves_in_row = shelves_in_row
         self.shelf_length = shelf_length
@@ -65,7 +66,16 @@ class ShopGenerator:
         top_shelf = np.full((1, self.map_.shape[1]), ShopElem.SHELF.value)
         top_blank_space = np.full((self.space_between_shelves, self.map_.shape[1]), ShopElem.SHOPPING_AREA.value)
 
-        self.map_ = np.vstack((top_shelf, top_blank_space, self.map_, top_blank_space))
+        bottom_blank_space = np.copy(top_blank_space)
+        bottom_blank_space[:, 0] = ShopElem.WALL.value
+
+        # Corners
+        top_shelf[:, 0:2] = ShopElem.WALL.value
+        top_shelf[:, -2:] = ShopElem.WALL.value
+        top_blank_space[:, 0] = ShopElem.WALL.value
+        top_blank_space[:, -1] = ShopElem.WALL.value
+
+        self.map_ = np.vstack((top_shelf, top_blank_space, self.map_, bottom_blank_space))
 
     def _draw_shop_checkouts(self):
         section_height = self.checkout_height + 2
