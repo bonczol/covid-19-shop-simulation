@@ -47,7 +47,7 @@ class CustomerAgent(HumanAgent):
 
     def step(self):
         for neighbor in self.model.grid.neighbor_iter(self.pos):
-            if self.sick and isinstance(neighbor, HumanAgent) and not neighbor.sick:
+            if self.sick and isinstance(neighbor, HumanAgent) and not neighbor.sick and not neighbor.infected:
                 neighbor.try_infect(neighbor)
             elif self.shopping_list and neighbor.pos == self.shopping_list[0][0] and type(neighbor) == ShelfAgent:
                 if self.sick:
@@ -200,7 +200,7 @@ class CashierAgent(HumanAgent):
 
     def step(self):
         for neighbor in self.model.grid.neighbor_iter(self.pos):
-            if self.sick and type(neighbor) == CustomerAgent and not neighbor.sick:
+            if self.sick and type(neighbor) == CustomerAgent and not neighbor.sick and not neighbor.infected:
                 neighbor.try_infect(neighbor)
 
 
