@@ -53,7 +53,7 @@ def schelling_draw(agent):
         if agent.sick:
             portrayal["Color"] = ["Red"]
         elif agent.infected:
-            portrayal["Color"] = ["Yellow"]
+            portrayal["Color"] = ["#fc9003"]
         else:
             portrayal["Color"] = ["Green"]
 

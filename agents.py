@@ -52,7 +52,7 @@ class CustomerAgent(HumanAgent):
             elif self.shopping_list and neighbor.pos == self.shopping_list[0][0] and type(neighbor) == ShelfAgent:
                 if self.sick:
                     self.try_infect_shelf(neighbor)
-                else:
+                elif not self.sick and not self.infected:
                     neighbor.try_infect(self)
 
         if self.shopping_list:
