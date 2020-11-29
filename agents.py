@@ -110,21 +110,21 @@ class CustomerAgent(HumanAgent):
 
     def go_to_out(self):
         pos=self.pos
-        if pos[1]==35:
+        if pos[1]==36:
             if self.model.grid.is_cell_empty((pos[0]-1, pos[1])):
                 self.model.grid.move_agent(self, (pos[0]-1, pos[1]))
-        elif pos[1]==34:
+        elif pos[1]==35:
             if self.model.grid.is_cell_empty((pos[0], pos[1]+1)):
                 self.model.grid.move_agent(self, (pos[0], pos[1]+1))
             elif self.model.grid.is_cell_empty((pos[0] + 1, pos[1])):
                 self.model.grid.move_agent(self, (pos[0] + 1, pos[1]))
-        elif pos[1]>27:
+        elif pos[1]>28:
             if self.model.grid.is_cell_empty((pos[0], pos[1]+1)):
                 self.model.grid.move_agent(self, (pos[0], pos[1]+1))
             elif self.model.grid.is_cell_empty((pos[0]+1, pos[1])):
                 self.model.grid.move_agent(self, (pos[0]+1, pos[1]))
         else:
-            next_pos = (pos[0], 28)
+            next_pos = (pos[0], 29)
             if self.model.grid.is_cell_empty(next_pos):
                 self.shopping_list.append((next_pos, next_pos))
             elif self.model.grid.is_cell_empty((pos[0]+1, pos[1])):

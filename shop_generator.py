@@ -30,7 +30,6 @@ class ShopGenerator:
         plt.gca().set_xticks([x - 0.5 for x in plt.gca().get_xticks()][1:], minor='true')
         plt.gca().set_yticks([y - 0.5 for y in plt.gca().get_yticks()][1:], minor='true')
         plt.grid(which='minor')
-        plt.show()
 
     def save(self, filename):
         np.savetxt(filename, self.map_, fmt='%s')
@@ -41,6 +40,7 @@ class ShopGenerator:
         self._draw_shop_checkouts()
         self._draw_walls()
         self._draw_entry_and_exit()
+        self.plot()
 
     def _draw_shop_center(self):
         # Calculate height/width to fill space with given number of shelves
@@ -66,7 +66,7 @@ class ShopGenerator:
         top_shelf = np.full((1, self.map_.shape[1]), ShopElem.SHELF.value)
         top_blank_space = np.full((self.space_between_shelves, self.map_.shape[1]), ShopElem.SHOPPING_AREA.value)
 
-        bottom_blank_space = np.copy(top_blank_space)
+        bottom_blank_space = np.full((self.space_between_rows, self.map_.shape[1]), ShopElem.SHOPPING_AREA.value)
         bottom_blank_space[:, 0] = ShopElem.WALL.value
 
         # Corners

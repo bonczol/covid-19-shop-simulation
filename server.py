@@ -80,7 +80,7 @@ infected_element = InfectElement()
 sick_element = SickElement()
 count_element = CountElement()
 
-canvas_element = CanvasGrid(schelling_draw, 26, 37, 650, 650)
+canvas_element = CanvasGrid(schelling_draw, 26, 38, 650, 650)
 sick_chart = ChartModule(
     [
         {"Label": "infections", "Color": "Black"},
