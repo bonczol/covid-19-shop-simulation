@@ -105,6 +105,7 @@ class CustomerAgent(HumanAgent):
                         a.pop(-1)
                     if self.model.grid.is_cell_empty(a[-1]):
                         self.model.grid.move_agent(self, a.pop(-1))
+                        return
 
 
     def go_to_out(self):
