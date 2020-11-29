@@ -71,10 +71,14 @@ class CovidModel(Model):
 
         self.infections = 0
         self.deaths = 0
+        self.customers = num_customers
+        self.sick_customers = 0
         self.datacollector = DataCollector(
             model_reporters={
                 "infections": "infections",
-                "deaths": "deaths"
+                "deaths": "deaths",
+                "customers": "customers",
+                "sick_customers": "sick_customers"
             }
         )
 
@@ -112,6 +116,7 @@ class CovidModel(Model):
             customer = CustomerAgent(self.get_id(), self, coord, sick, mask, risk_group)
             self.grid.place_agent(customer, coord)
             self.schedule.add(customer)
+            if sick: self.sick_customers += 1
 
     def spawn_cashiers(self):
         sick_arr = shuffled_bools(self.num_cashiers, self.sick_cashiers_num / self.num_cashiers)
@@ -141,6 +146,8 @@ class CovidModel(Model):
             customer = CustomerAgent(self.get_id(), self, (x, y - 1), sick, mask, risk_group)
             self.grid.place_agent(customer, (x, y - 1))
             self.schedule.add(customer)
+            self.customers += 1
+            if sick: self.sick_customers += 1
             return True
         else:
             return False
