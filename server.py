@@ -72,12 +72,12 @@ sick_chart = ChartModule(
 model_params = {
     "num_customers": UserSettableParameter("slider", "Liczba osób w sklepie", 10, 1, 40, 1),
     "sick_percent": UserSettableParameter("slider", "Procent ludzi chorych wchodzących", 0.2, 0.00, 1.0, 0.05),
-    "mask_percent": UserSettableParameter("slider", "Procent ludzi noszących maseczki", 0.2, 0.00, 1.0, 0.05),
+    "mask_percent": UserSettableParameter("slider", "Procent ludzi noszących maseczki", 0.5, 0.00, 1.0, 0.05),
     "risk_group_percent": UserSettableParameter("slider", "Procent należących do grupy wysokiego ryzyka", 0.2, 0.00, 1.0, 0.05),
-    "death_ratio": UserSettableParameter("slider", "Śmiertelność dla grupy niskiego ryzyka", 0.2, 0.00, 1.0, 0.05),
+    "death_ratio": UserSettableParameter("slider", "Śmiertelność dla grupy niskiego ryzyka", 0.1, 0.00, 1.0, 0.05),
     "death_ratio_rg": UserSettableParameter("slider", "Śmiertelność dla grupy wysokiego ryzyka", 0.2, 0.00, 1.0, 0.05),
     "infect_shelf_prob": UserSettableParameter("slider", "Prawdopodobieństwo zakażenia półki", 0.2, 0.00, 1.0, 0.05),
-    "max_shelf_sick_level": UserSettableParameter("slider", "Czas utrzymywania się wirusa na półce", 10, 1, 15, 1),
+    "virus_duration": UserSettableParameter("slider", "Czas utrzymywania się wirusa na półce", 20, 0, 100, 5),
     "sick_cashiers_num": UserSettableParameter("slider", "Liczba zarażonych kasjerów", 2, 0, 4, 1),
     "cashiers_masks": UserSettableParameter("checkbox", "Kasjerzy w maseczkach", value=True)
 }
