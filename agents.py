@@ -88,13 +88,24 @@ class CustomerAgent(HumanAgent):
             else:
                 self.path_cache=[]
 
-        a = self.find_path(self.shopping_list[0][1])
-        if len(a) > 1:
-            a.pop(-1)
+        target = self.shopping_list[0][1]
+        if self.model.grid.is_cell_empty(target):
+            a = self.find_path(target)
+            if len(a) > 1:
+                a.pop(-1)
 
-        if self.model.grid.is_cell_empty(a[-1]):
-            self.model.grid.move_agent(self, a.pop(-1))
-            self.path_cache=a
+            if self.model.grid.is_cell_empty(a[-1]):
+                self.model.grid.move_agent(self, a.pop(-1))
+                self.path_cache=a
+        else:
+            for neighbor in self.model.grid.neighbor_iter(self.pos):
+                if self.model.grid.is_cell_empty(neighbor.pos):
+                    a = self.find_path(neighbor.pos)
+                    if len(a) > 1:
+                        a.pop(-1)
+                    if self.model.grid.is_cell_empty(a[-1]):
+                        self.model.grid.move_agent(self, a.pop(-1))
+
 
     def go_to_out(self):
         pos=self.pos
