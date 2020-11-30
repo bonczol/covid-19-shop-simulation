@@ -89,7 +89,7 @@ sick_chart = ChartModule(
 )
 
 model_params = {
-    "num_customers": UserSettableParameter("slider", "Liczba osób w sklepie", 10, 1, 40, 1),
+    "num_customers": UserSettableParameter("slider", "Liczba osób w sklepie", 10, 1, 30, 1),
     "sick_percent": UserSettableParameter("slider", "Procent ludzi chorych wchodzących", 0.2, 0.00, 1.0, 0.05),
     "mask_percent": UserSettableParameter("slider", "Procent ludzi noszących maseczki", 0.5, 0.00, 1.0, 0.05),
     "risk_group_percent": UserSettableParameter("slider", "Procent należących do grupy wysokiego ryzyka", 0.2, 0.00,
