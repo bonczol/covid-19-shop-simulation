@@ -166,3 +166,6 @@ class CovidModel(Model):
         if self.c > 0:
             if self.add_new_customer():
                 self.c -= 1
+
+        if self.customers > 200:
+            self.running = False
